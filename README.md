@@ -14,7 +14,7 @@
 - Jackson, Modelmapper
 - Lombok
 
-![alt text](https://github.com/ModiconMe/spring-cloud-microservices/Architecture.png "ARCHITECTURE")
+![alt text](https://github.com/ModiconMe/spring-cloud-microservices/blob/main/Architecture.png "ARCHITECTURE")
 
 ## Getting Started
 
