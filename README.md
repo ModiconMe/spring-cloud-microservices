@@ -14,6 +14,8 @@
 - Jackson, Modelmapper
 - Lombok
 
+![alt text](https://github.com/ModiconMe/spring-cloud-microservices/Architecture.png "ARCHITECTURE")
+
 ## Getting Started
 
 Для запуска проекта требуется установка Docker и Docker-Compose
