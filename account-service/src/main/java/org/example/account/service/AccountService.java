@@ -1,48 +1,21 @@
 package org.example.account.service;
 
 import org.example.account.entity.Account;
-import org.example.account.exception.AccountNotFoundException;
-import org.example.account.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.util.List;
+public interface AccountService {
 
-public class AccountService {
+    Account getAccountById(Long accountId);
 
-    private final AccountRepository accountRepository;
+    Long createAccount(Account account);
 
-    @Autowired
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    Account updateAccount(Long accountId, Account newAccount);
 
-    public Account getAccountById(Long accountId) {
-        return accountRepository.findById(accountId)
-                .orElseThrow(
-                        () -> new AccountNotFoundException("Account with id " + accountId + " is not found")
-                );
-    }
+    @Transactional
+    Account deleteAccount(Long accountId);
 
-    public Long createAccount(String name, String email, String phone, List<Long> bills) {
-        Account account = new Account(name, email, phone, OffsetDateTime.now(), bills);
-        return accountRepository.save(account).getAccountId();
-    }
+    Account addBillToAccount(Long accountId, Long billId);
 
-    public Account updateAccount(Long accountId, String name, String email, String phone, List<Long> bills) {
-        Account account = new Account();
-        account.setAccountId(accountId);
-        account.setName(name);
-        account.setEmail(email);
-        account.setPhone(phone);
-        account.setBills(bills);
-        return accountRepository.save(account);
-    }
-
-    public Account deleteAccount(Long accountId) {
-        Account deletedAccount = getAccountById(accountId);
-        accountRepository.deleteById(accountId);
-        return deletedAccount;
-    }
+    Account removeBillFromAccount(Long accountId, Long billId);
 
 }

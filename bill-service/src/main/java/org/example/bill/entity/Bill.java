@@ -12,6 +12,9 @@ import java.time.OffsetDateTime;
 @Setter
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
+@Builder
+@AllArgsConstructor
 public class Bill {
 
     @Id
@@ -27,29 +30,12 @@ public class Bill {
     private boolean isDefault;
 
     @Column(name = "creationDate", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime creationDate;
 
     @Column(name = "overdraft_enabled", nullable = false)
     private boolean overdraftEnabled;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "bill_account_id_fk"), nullable = false)
-    private Account account;
+    @Column(name = "account_id", nullable = false)
+    private Long account;
 
-    public Bill(BigDecimal amount, boolean isDefault, OffsetDateTime creationDate, boolean overdraftEnabled, Account account) {
-        this.amount = amount;
-        this.isDefault = isDefault;
-        this.creationDate = creationDate;
-        this.overdraftEnabled = overdraftEnabled;
-        this.account = account;
-    }
-
-    public Bill(BigDecimal amount, boolean isDefault, boolean overdraftEnabled, Account account) {
-        this.amount = amount;
-        this.isDefault = isDefault;
-        this.overdraftEnabled = overdraftEnabled;
-        this.account = account;
-    }
 }
