@@ -2,6 +2,7 @@ package org.example.deposit.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.example.deposit.controller.dto.DepositResponseDTO;
 import org.example.deposit.entity.Deposit;
 import org.example.deposit.exception.DepositServiceException;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Service
+@Slf4j
 public class DepositService {
 
     private static final String TOPIC_EXCHANGE_DEPOSIT = "js.deposit.notify.exchange";
@@ -51,6 +53,7 @@ public class DepositService {
             billServiceClient.update(billId, billRequestDTO);
             AccountResponseDTO accountResponseDTO = accountServiceClient.getAccountById(billResponseDTO.getAccount());
             depositRepository.save(new Deposit(amount, billId, OffsetDateTime.now(), accountResponseDTO.getEmail()));
+            log.info("Accept a deposit to bill with id " + billId + " for amount " + amount);
             return createResponse(amount, accountResponseDTO);
         }
 
@@ -59,6 +62,7 @@ public class DepositService {
         billServiceClient.update(defaultBill.getBillId(), billRequestDTO);
         AccountResponseDTO account = accountServiceClient.getAccountById(accountId);
         depositRepository.save(new Deposit(amount, defaultBill.getBillId(), OffsetDateTime.now(), account.getEmail()));
+        log.info("Accept a deposit to bill with id " + defaultBill.getBillId() + " for amount " + amount);
         return createResponse(amount, account);
     }
 

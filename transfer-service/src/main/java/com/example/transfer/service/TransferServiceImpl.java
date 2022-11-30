@@ -8,6 +8,7 @@ import com.example.transfer.repository.TransferRepository;
 import com.example.transfer.rest.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Service
+@Slf4j
 public class TransferServiceImpl implements TransferService {
 
     private static final String TOPIC_EXCHANGE_DEPOSIT = "js.deposit.notify.exchange";
@@ -81,6 +83,7 @@ public class TransferServiceImpl implements TransferService {
                     toAccountId,
                     OffsetDateTime.now())
             );
+            log.info("Accept a transfer to bill with id " + toBillId + " for amount " + amount + " from bill with id " + fromBillId);
             return createResponse(fromBill.getBillId(), toBillId, amount);
         }
 
@@ -100,7 +103,8 @@ public class TransferServiceImpl implements TransferService {
                 toAccountId,
                 OffsetDateTime.now())
         );
-        return createResponse(defaultBill.getBillId(), toBillId, amount);
+        log.info("Accept a transfer to bill with id " + defaultBill.getBillId() + " for amount " + amount + " from bill with id " + fromBillId);
+        return createResponse(fromBillId, defaultBill.getBillId(), amount);
     }
 
     private void transferMoneyBetweenBills(Long toBillId, BigDecimal amount, BillResponseDTO fromBill) {

@@ -1,5 +1,6 @@
 package org.example.bill.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.bill.entity.Bill;
 import org.example.bill.utils.exception.BillNotFoundException;
 import org.example.bill.repository.BillRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 import static java.lang.String.format;
 
 @Service
+@Slf4j
 public class BillServiceImpl implements BillService {
 
     private final BillRepository billRepository;
@@ -51,6 +53,7 @@ public class BillServiceImpl implements BillService {
         bill.setCreationDate(OffsetDateTime.now());
         Long billId = billRepository.save(bill).getBillId();
         accountServiceClient.addBillToAccount(bill.getAccount(), billId);
+        log.info("Create bill with id " + billId);
         return billId;
     }
 
@@ -68,8 +71,8 @@ public class BillServiceImpl implements BillService {
     ) {
         Bill bill = getBillById(billId);
         bill.setAmount(newBill.getAmount());
-        bill.setDefault(newBill.isDefault());
         bill.setOverdraftEnabled(newBill.isOverdraftEnabled());
+        log.info("Update bill with id " + billId + " set amount " + newBill.getAmount() + " set overdraft " + newBill.isOverdraftEnabled());
         return billRepository.save(bill);
     }
 
@@ -85,6 +88,7 @@ public class BillServiceImpl implements BillService {
         Bill deletedBill = getBillById(billId);
         billRepository.deleteById(billId);
         accountServiceClient.removeBillFromAccount(deletedBill.getAccount(), billId);
+        log.info("Delete bill with id " + billId);
         return deletedBill;
     }
 
@@ -98,6 +102,7 @@ public class BillServiceImpl implements BillService {
     public List<Bill> deleteBillsByAccountId(Long accountId) {
         List<Bill> billsToDelete = getBillsByAccountId(accountId);
         billRepository.deleteAll(billsToDelete);
+        log.info("Delete bills for account " + accountId);
         return billsToDelete;
     }
 
@@ -127,6 +132,7 @@ public class BillServiceImpl implements BillService {
         accountBills.forEach(b -> b.setDefault(false));
         bill.setDefault(true);
 
+        log.info("Set bill with id " + billId + " as account default");
         billRepository.saveAll(accountBills);
         return billRepository.save(bill);
     }

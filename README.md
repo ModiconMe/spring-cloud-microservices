@@ -1,18 +1,18 @@
 # ќписание проекта
 
 ѕроект реализует базовую логику банковского приложени€:
-*создание аккаунта (account-service)
-*создание счета (bill-service)
-*перевод денег между счетами (transfer-service)
-*пополнение счета (deposit-service)
+* создание аккаунта (account-service)
+* создание счета (bill-service)
+* перевод денег между счетами (transfer-service)
+* пополнение счета (deposit-service)
 
 ќсновные используемые технологии:
--Java 17
--Spring (Boot, Web, Data JPA, Cloud, Validation)
--JUnit 5, Mockito, AssertJ
--PostgreSQL
--Jackson, Modelmapper
--Lombok
+- Java 17
+- Spring (Boot, Web, Data JPA, Cloud, Validation)
+- JUnit 5, Mockito, AssertJ
+- PostgreSQL
+- Jackson, Modelmapper
+- Lombok
 
 ## Getting Started
 

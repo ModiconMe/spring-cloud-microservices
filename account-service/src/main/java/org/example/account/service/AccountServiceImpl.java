@@ -1,5 +1,6 @@
 package org.example.account.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.account.entity.Account;
 import org.example.account.utils.exception.AccountAlreadyExistException;
 import org.example.account.utils.exception.AccountNotFoundException;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
@@ -59,7 +61,9 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountAlreadyExistException(String.format(ACCOUNT_ALREADY_EXIST_BY_PHONE, account.getPhone()));
 
         account.setCreationDate(OffsetDateTime.now());
-        return accountRepository.save(account).getAccountId();
+        Long accountId = accountRepository.save(account).getAccountId();
+        log.info("Create account with id " + accountId + ", email " + account.getEmail() + ", phone number " + account.getPhone());
+        return accountId;
     }
 
     /**
@@ -87,6 +91,7 @@ public class AccountServiceImpl implements AccountService {
         account.setEmail(newAccount.getEmail());
         account.setPhone(newAccount.getPhone());
         account.setBills(newAccount.getBills());
+        log.info("Update account with id " + accountId);
         return accountRepository.save(account);
     }
 
@@ -99,11 +104,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public Account deleteAccount(Long accountId) {
-        // ??????? ????????? ?????
+        // send request to delete all account bills
         billServiceClient.deleteBillByAccountId(accountId);
-        // ???????? ? ??????? ???????
+        // delete account
         Account deletedAccount = getAccountById(accountId);
         accountRepository.deleteById(accountId);
+        log.info("Delete account with id " + accountId);
         return deletedAccount;
     }
 
@@ -118,6 +124,7 @@ public class AccountServiceImpl implements AccountService {
     public Account addBillToAccount(Long accountId, Long billId) {
         Account account = getAccountById(accountId);
         account.addBill(billId);
+        log.info("Add bill " + billId + " to account with id " + accountId);
         return accountRepository.save(account);
     }
 
@@ -132,6 +139,7 @@ public class AccountServiceImpl implements AccountService {
     public Account removeBillFromAccount(Long accountId, Long billId) {
         Account account = getAccountById(accountId);
         account.removeBill(billId);
+        log.info("Remove bill " + billId + " from account with id " + accountId);
         return accountRepository.save(account);
     }
 
